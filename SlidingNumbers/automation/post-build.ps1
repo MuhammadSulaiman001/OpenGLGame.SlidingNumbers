@@ -9,15 +9,15 @@ param([string]$projectDir, [string]$outputPath, [string]$configuration);
 "configuration = $configuration"
 
 "Copying dlls to output dir..."
-$dlls_path = if($configuration -eq "Debug")
-{
-	"dlls"
-}
-else
+$dlls_path = if($configuration -eq "Release")
 {
 	"dlls-release"
 }
-Copy-Item -Path "$projectDir\dependencies\$dlls_path\*" -Destination "$outputPath" -Force -Recurse # this \* will make the .dll files, not the folder.
+else
+{
+	"dlls"
+}
+Copy-Item -Path "$projectDir\dependencies\$dlls_path\*" -Destination "$outputPath" -Force -Recurse # without \*, $dlls_path subdirectory will be copied to output.
 
 "Copying assets to output dir..."
 Copy-Item -Path "$projectDir\assets" -Destination "$outputPath" -Force -Recurse # copies assets folder
@@ -34,7 +34,7 @@ if($configuration -eq "Release")
 	Get-ChildItem $outputPath *.pdb | foreach { Remove-Item -Path $_.FullName }
 
 	"Compressing the output..."
-	Compress-Archive "$outputPath\*" -Destination "$outputPath\SlidingNumbers-game.zip"
+	Compress-Archive "$outputPath\*" -Destination "$outputPath\SlidingNumbers-TheGame.zip"
 }
 
 "DONE."
